@@ -1,13 +1,25 @@
-from aiogram.utils import executor
 from aiogram import types
 from pytube import YouTube
 from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
 from os import walk
 import os, shutil
 from config import dp, bot
-from buttons import back_to_the_main_menu
+from buttons import keyboard, back_to_the_main_menu
 
-folder = 'C:/Dev/tgbot_proect/videos'
+
+folder = 'C:/Dev/tgbot_project/videos'
+
+
+def cleaning_folder():
+    for filename in os.listdir(folder):
+            file_path = os.path.join(folder, filename)
+            try:
+                if os.path.isfile(file_path) or os.path.islink(file_path):
+                    os.unlink(file_path)
+                elif os.path.isdir(file_path):
+                    shutil.rmtree(file_path)
+            except Exception as e:
+                print('Failed to delete %s. Reason: %s' % (file_path, e))
 
 
 @dp.message_handler(text='Обрезать ютуб-видео')
@@ -36,15 +48,7 @@ async def download_720p_mp4_videos(message: types.Message):
 
     except:
         #чистим папку на всякий случай если вышла ошибка
-        for filename in os.listdir(folder):
-            file_path = os.path.join(folder, filename)
-            try:
-                if os.path.isfile(file_path) or os.path.islink(file_path):
-                    os.unlink(file_path)
-                elif os.path.isdir(file_path):
-                    shutil.rmtree(file_path)
-            except Exception as e:
-                print('Failed to delete %s. Reason: %s' % (file_path, e))
+        cleaning_folder()
 
 
 #находим сообщение в формате 1:30-2:40
@@ -80,19 +84,14 @@ async def cut_video(message: types.Message):
             await message.answer('Упс.. не получилось😢 Отправь ссылку ещё раз', reply_markup=back_to_the_main_menu)
         
         #чистим папку
-        for filename in os.listdir(folder):
-            file_path = os.path.join(folder, filename)
-            try:
-                if os.path.isfile(file_path) or os.path.islink(file_path):
-                    os.unlink(file_path)
-                elif os.path.isdir(file_path):
-                    shutil.rmtree(file_path)
-            except Exception as e:
-                print('Failed to delete %s. Reason: %s' % (file_path, e))
+        cleaning_folder()
+
 
     except:
         await message.answer('Не правильно написаны таймкоды :( Напиши, пожалуйста, в формате 2:10-3:15', reply_markup=back_to_the_main_menu)
 
 
-if __name__ == '__main__':
-    executor.start_polling(dp)
+@dp.message_handler(text=['Вернуться в главное меню'])
+async def cut_video(message: types.Message):
+    await message.answer('Выбери один из вариантов', reply_markup=keyboard)
+    cleaning_folder()

@@ -2,6 +2,7 @@ from aiogram import types, executor
 from config import dp
 from buttons import keyboard
 from cut_video import *
+from ya_music import *
 
 
 @dp.message_handler(commands=['start'])

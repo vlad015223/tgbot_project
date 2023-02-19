@@ -2,7 +2,7 @@ from aiogram import types
 
 main_kb = [
         [types.KeyboardButton(text='Обрезать ютуб-видео')],
-        [types.KeyboardButton(text='Вторая кнопка')],
+        [types.KeyboardButton(text='Получить аудио из Я. Музыки')],
         [types.KeyboardButton(text='Третья кнопка')],
         [types.KeyboardButton(text='Четвертая кнопка')],
         [types.KeyboardButton(text='Пятая кнопка')],
