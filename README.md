@@ -1,1 +1,1 @@
-# tgbot_proect
+# tgbot_project
