@@ -11,6 +11,11 @@ async def get_url(message: types.Message):
     await message.answer('Отправь ссылку на аудио', reply_markup=back_to_the_main_menu)
 
 
+"""
+TODO:
+Исправить ошибку которая выходит если в названии есть / (https://music.yandex.ru/album/12697519/track/73259141)
+FileNotFoundError: [Errno 2] No such file or directory: "Hollywood's Bleeding / Numb"
+"""
 @dp.message_handler(regexp='https://music.yandex.ru')
 async def download_track(message: types.Message):
     track_id = message.text.split('/')[6] + ':' + message.text.split('/')[4]
