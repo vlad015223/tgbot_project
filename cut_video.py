@@ -29,17 +29,16 @@ async def get_url(message: types.Message):
 
 @dp.message_handler(regexp='https://www.youtube.com/' or 'https://youtu.be')
 async def download_720p_mp4_videos(message: types.Message):
-    print('start_download')
     await message.answer('Идёт загрузка. Время загрузки зависит от длительности видео')
 
     yt = YouTube(str(message))
 
-    yt.streams.filter(file_extension='mp4').get_by_resolution('720p').download(folder)
+    yt.streams.filter(file_extension='mp4').get_by_resolution('720p').download(output_path=folder, filename=f'{message.from_user.username}.mp4')
 
     print('download started')
 
-    try:
         #скачиваем видео по ссылке
+    try:
         download_720p_mp4_videos(
             str(message.text)
         )
@@ -47,7 +46,8 @@ async def download_720p_mp4_videos(message: types.Message):
         await message.answer('Напиши тайминги в формате 1:30-2:40 (не более 4х минут)', reply_markup=back_to_the_main_menu)
 
     except:
-        #чистим папку на всякий случай если вышла ошибка
+        await message.answer('Ошибка. Отправь ещё раз', reply_markup=back_to_the_main_menu)
+        #чистим папку на всякий случай
         cleaning_folder()
 
 
@@ -73,15 +73,12 @@ async def cut_video(message: types.Message):
         end = list_of_video_timings[1]
         end_in_seconds = sum(int(x) * 60 ** i for i, x in enumerate(reversed(end.split(':'))))
 
-        cut = f'{message.from_user.username}.mp4'
+        cut = f'{message.from_user.username}'
 
         #обрезаем видео
         ffmpeg_extract_subclip(f"{folder}/{video_title[-1][-1]}", int(start_in_seconds), int(end_in_seconds), targetname=f"{folder}/{cut}")
 
-        if message.from_user.username == cut.split('.mp4')[0]:
-            await bot.send_video(message.chat.id, open(f'{folder}/{cut}', 'rb'))
-        else:
-            await message.answer('Упс.. не получилось😢 Отправь ссылку ещё раз', reply_markup=back_to_the_main_menu)
+        await bot.send_video(message.chat.id, open(f'{folder}/{cut}', 'rb'))
         
         #чистим папку
         cleaning_folder()
