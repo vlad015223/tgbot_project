@@ -1,9 +1,9 @@
 from aiogram import Bot, Dispatcher
 from yandex_music import Client
+from decouple import config
 
-TOKEN_API = '6038040501:AAF0oDt-TtESHnwucv-sZra0YgznTQYVA34'
-
-music_token = 'AQAAAAAx154uAAG8XvQ6lxavIUhboStHhtmkOi0'
+TOKEN_API = config('TOKEN_API')
+music_token = config('music_token')
 client = Client(music_token).init()
 
 bot = Bot(TOKEN_API)
